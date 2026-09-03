@@ -1,0 +1,47 @@
+{
+  "name": "govyzer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Govyzer - multi-tenant UAE real estate CRM, API and Sales Screen platform",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:api dev:crm dev:screen",
+    "dev:api": "npm run dev --workspace=@govyzer/api",
+    "dev:crm": "npm run dev --workspace=@govyzer/crm-web",
+    "dev:screen": "npm run dev --workspace=@govyzer/sales-screen",
+    "build": "npm run build --workspace=@govyzer/crm-web && npm run build --workspace=@govyzer/sales-screen",
+    "build:crm": "npm run build --workspace=@govyzer/crm-web",
+    "build:screen": "npm run build --workspace=@govyzer/sales-screen",
+    "db:migrate": "npm run migrate --workspace=@govyzer/database",
+    "db:rollback": "npm run rollback --workspace=@govyzer/database",
+    "db:seed": "npm run seed --workspace=@govyzer/database",
+    "db:reset": "npm run reset --workspace=@govyzer/database",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "check:no-typescript": "node scripts/check-no-typescript.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "verify": "npm run check:no-typescript && npm run lint && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.1",
+    "eslint": "8.57.1",
+    "eslint-config-next": "15.1.6",
+    "eslint-plugin-react": "7.37.4",
+    "npm-run-all": "4.1.5",
+    "prettier": "3.4.2",
+    "supertest": "7.0.0",
+    "vitest": "2.1.8"
+  }
+}
