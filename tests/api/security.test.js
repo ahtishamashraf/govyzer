@@ -205,3 +205,46 @@ describe('permission boundaries', () => {
     expect(response.body.error.message).toMatch(/offplan module/);
   });
 });
+
+describe('CSRF protection', () => {
+  let org;
+  let owner;
+
+  beforeAll(async () => {
+    await prepareDatabase();
+    await truncateAll();
+    org = await createTestOrganization({ slug: 'csrf-org' });
+    owner = await signIn({ email: org.owner.email, password: org.password });
+  });
+
+  afterAll(async () => {
+    await closeDatabase();
+  });
+
+  it('rejects a cookie-authorized write without the CSRF header', async () => {
+    const login = await anonymous().post('/v1/auth/login').send({ email: org.owner.email, password: org.password });
+    const cookies = login.headers['set-cookie'].map((cookie) => cookie.split(';')[0]).join('; ');
+
+    const withoutHeader = await anonymous().post('/v1/leads').set('cookie', cookies).send({ module: 'ready', purpose: 'buy', contact: { first_name: 'CSRF' } });
+    expect(withoutHeader.status).toBe(403);
+    expect(withoutHeader.body.error.message).toMatch(/CSRF/i);
+
+    const csrf = cookies.split('; ').find((cookie) => cookie.startsWith('gvz_csrf=')).split('=')[1];
+    const withHeader = await anonymous()
+      .post('/v1/leads')
+      .set('cookie', cookies)
+      .set('x-csrf-token', decodeURIComponent(csrf))
+      .send({ module: 'ready', purpose: 'buy', contact: { first_name: 'CSRF', identifiers: [{ identifier_type: 'phone', value: '0501110000' }] } });
+    expect(withHeader.status).toBe(201);
+  });
+
+  it('still allows display pairing when a stale browser cookie is present', async () => {
+    const display = await owner.post('/v1/sales-screen/displays').send({ name: 'CSRF display' });
+    const pairing = await owner.post(`/v1/sales-screen/displays/${display.body.data.id}/pairing-code`).send({});
+    const login = await anonymous().post('/v1/auth/login').send({ email: org.owner.email, password: org.password });
+    const cookies = login.headers['set-cookie'].map((cookie) => cookie.split(';')[0]).join('; ');
+
+    const response = await anonymous().post('/v1/display/pair').set('cookie', cookies).send({ code: pairing.body.data.code });
+    expect(response.status).toBe(201);
+  });
+});

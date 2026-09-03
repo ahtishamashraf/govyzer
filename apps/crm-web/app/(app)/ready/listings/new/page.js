@@ -218,12 +218,16 @@ export default function NewListingPage() {
           <Button type="button" variant="secondary" disabled={step === 0} onClick={() => setStep((value) => Math.max(0, value - 1))}>
             Back
           </Button>
+          {/* Distinct keys keep these as separate elements: without them React would reuse
+              the same button node and the click that advances the step would also submit. */}
           {step < STEPS.length - 1 ? (
-            <Button type="button" onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}>
+            <Button key="wizard-continue" type="button" onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}>
               Continue
             </Button>
           ) : (
-            <Button type="submit" loading={state.loading}>Create listing</Button>
+            <Button key="wizard-submit" type="submit" loading={state.loading}>
+              Create listing
+            </Button>
           )}
         </div>
       </form>
