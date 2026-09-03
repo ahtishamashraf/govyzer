@@ -35,7 +35,7 @@ function PairForm() {
       <label htmlFor="code" style={{ display: 'block', marginBottom: 12, color: 'var(--muted)' }}>
         Pairing code
       </label>
-      {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
+      {/* Focus goes to the input so a keyboard or remote can type immediately. */}
       <input
         id="code"
         autoFocus

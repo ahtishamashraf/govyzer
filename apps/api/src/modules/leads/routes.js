@@ -200,7 +200,7 @@ export function leadRoutes() {
     requirePermission('leads.update'),
     validate({ params: z.object({ id: idSchema }) }),
     handler(async (req, res) => {
-      sendData(res, await service.acknowledgeLead({ organizationId: req.actor.organizationId, actor: req.actor, id: req.validatedParams.id }));
+      sendData(res, await service.acknowledgeLead({ organizationId: req.actor.organizationId, id: req.validatedParams.id }));
     })
   );
 

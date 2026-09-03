@@ -1,10 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { getDb } from '@govyzer/database';
 import { newId } from '@govyzer/domain';
 import { closeDatabase, createTestOrganization, prepareDatabase, truncateAll } from '../helpers/db.js';
-import { createLead, claimFromPool, releaseToPool, changeStage } from '../../apps/api/src/modules/leads/service.js';
+import { createLead, claimFromPool, releaseToPool } from '../../apps/api/src/modules/leads/service.js';
 import { processSlaEvent } from '../../apps/api/src/modules/leads/sla.js';
-import { createHold, createReservation, expireReservation, createBooking } from '../../apps/api/src/modules/offplan/inventory.js';
+import { createHold, createReservation, expireReservation } from '../../apps/api/src/modules/offplan/inventory.js';
 import { importStock } from '../../apps/api/src/modules/offplan/stock-import.js';
 import { createDeal, changeStage as changeDealStage } from '../../apps/api/src/modules/deals/service.js';
 import { processOutboxBatch } from '../../apps/api/src/jobs/outbox-processor.js';

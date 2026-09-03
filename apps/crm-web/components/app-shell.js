@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Button, Input, Toast, useToasts } from '@govyzer/ui';
+import { Button, Toast, useToasts } from '@govyzer/ui';
 import { apiFetch, useSession } from '@/lib/api-client';
 import { useI18n, useTheme } from '@/lib/i18n';
 import { initials } from '@/lib/format';

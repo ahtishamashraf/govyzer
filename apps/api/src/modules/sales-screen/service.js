@@ -9,7 +9,7 @@ import {
   buildLeaderboard,
 } from '@govyzer/domain';
 import { loadServerConfig } from '@govyzer/config';
-import { sha256, randomToken } from '../../core/crypto.js';
+import { sha256 } from '../../core/crypto.js';
 import { signDisplayToken } from '../../core/tokens.js';
 import { recordAudit } from '../../core/audit.js';
 

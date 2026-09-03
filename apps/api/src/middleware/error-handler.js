@@ -21,8 +21,9 @@ export function notFoundHandler() {
   };
 }
 
-// eslint-disable-next-line no-unused-vars
 export function errorHandler() {
+  // Express identifies an error handler by its four-argument signature.
+  // eslint-disable-next-line no-unused-vars
   return (error, req, res, next) => {
     const requestId = res.locals?.requestId ?? null;
 

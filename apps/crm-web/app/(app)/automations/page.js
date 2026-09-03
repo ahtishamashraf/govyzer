@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Badge, Button, Card, DataTable, Drawer, ErrorState, Field, Input, PermissionDenied, Select, Textarea } from '@govyzer/ui';
+import { Badge, Button, Card, DataTable, Drawer, ErrorState, Field, Input, PermissionDenied, Select } from '@govyzer/ui';
 import PageHeader from '@/components/page-header';
 import { apiFetchWithRefresh, useApi, useSession } from '@/lib/api-client';
 import { formatDateTime, titleCase } from '@/lib/format';

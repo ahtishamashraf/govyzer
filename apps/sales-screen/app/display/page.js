@@ -133,7 +133,7 @@ export default function DisplayPage() {
       <header className="screen__head">
         <div className="screen__brand">
           {feed.branding?.logo_light_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
+            // A plain img keeps tenant logo URLs working without image-optimizer config.
             <img className="screen__logo" src={feed.branding.logo_light_url} alt="" />
           ) : null}
           <span className="screen__org">{feed.branding?.company_display_name ?? feed.organization?.name}</span>

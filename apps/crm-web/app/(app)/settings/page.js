@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const { intlLocale } = useI18n();
   const [tab, setTab] = useState('organization');
   const [inviteOpen, setInviteOpen] = useState(false);
-  const { data: organization, loading, error, reload } = useApi('/v1/organization');
+  const { data: organization, error, reload } = useApi('/v1/organization');
   const { data: users, reload: reloadUsers } = useApi('/v1/users?per_page=100');
   const { data: roles } = useApi('/v1/organization/roles');
   const { data: domains, reload: reloadDomains } = useApi('/v1/organization/domains');

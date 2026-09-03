@@ -104,10 +104,6 @@ const listingCopySchema = z.object({
   highlights: z.array(z.string()),
 });
 
-const duplicateSchema = z.object({
-  duplicates: z.array(z.object({ id: z.string(), confidence: z.number(), reason: z.string() })),
-});
-
 const reportIntentSchema = z.object({
   report_code: z.string(),
   filters: z.object({ from: z.string().nullable(), to: z.string().nullable(), module: z.string().nullable() }),

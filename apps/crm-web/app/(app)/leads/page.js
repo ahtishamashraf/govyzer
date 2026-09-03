@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Badge, Button, Card, DataTable, Drawer, EmptyState, ErrorState, Field, Input, PermissionDenied, Select, Skeleton, StatusBadge, Tabs } from '@govyzer/ui';
+import { Badge, Button, Card, DataTable, Drawer, EmptyState, ErrorState, Field, Input, PermissionDenied, Select, Skeleton, StatusBadge } from '@govyzer/ui';
 import PageHeader from '@/components/page-header';
 import { apiFetchWithRefresh, buildQuery, useApi, useSession } from '@/lib/api-client';
-import { formatMoney, formatDate, relativeTime, titleCase } from '@/lib/format';
+import { formatMoney, relativeTime, titleCase } from '@/lib/format';
 import { useI18n } from '@/lib/i18n';
 
 export default function LeadsPage() {

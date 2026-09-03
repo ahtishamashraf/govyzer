@@ -81,7 +81,7 @@ export function useApi(path, { enabled = true, deps = [] } = {}) {
       if (error.name === 'AbortError') return;
       setState({ data: null, meta: null, loading: false, error });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Extra deps are supplied by the caller so a changing query string refetches.
   }, [path, enabled, ...deps]);
 
   useEffect(() => {

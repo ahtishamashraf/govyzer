@@ -1,0 +1,43 @@
+{
+  "root": true,
+  "env": { "browser": true, "node": true, "es2023": true },
+  "parserOptions": { "ecmaVersion": 2023, "sourceType": "module", "ecmaFeatures": { "jsx": true } },
+  "extends": ["eslint:recommended"],
+  "plugins": ["react"],
+  "settings": { "react": { "version": "detect" } },
+  "rules": {
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "ignoreRestSiblings": true }],
+    "no-console": "off",
+    "eqeqeq": ["error", "smart"],
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-await-in-loop": "off",
+    "react/jsx-uses-react": "off",
+    "react/jsx-uses-vars": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.cjs"],
+      "parserOptions": { "sourceType": "script" },
+      "env": { "node": true, "commonjs": true }
+    },
+    {
+      "files": ["apps/crm-web/**/*.js", "apps/sales-screen/**/*.js", "packages/ui/**/*.js"],
+      "parserOptions": { "ecmaFeatures": { "jsx": true } }
+    },
+    {
+      "files": ["tests/**/*.js"],
+      "env": { "node": true }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "dist/",
+    "build/",
+    "coverage/",
+    "test-results/",
+    "playwright-report/",
+    "docs/"
+  ]
+}

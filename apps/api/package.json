@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "openapi": "node scripts/generate-openapi.js",
+    "openapi": "node ./scripts/generate-openapi.js",
     "test": "vitest run",
     "seed:demo": "node ./scripts/seed-demo.js"
   },

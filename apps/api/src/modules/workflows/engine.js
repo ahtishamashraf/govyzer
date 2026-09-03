@@ -241,7 +241,7 @@ export async function runWorkflow({ db = getDb(), organizationId, runId = null, 
   }
 
   let run = runId ? await db('workflow_runs').where('id', runId).first() : null;
-  let version = run
+  const version = run
     ? await db('workflow_versions').where('id', run.workflow_version_id).first()
     : await db('workflow_versions').where('id', versionId).first();
   if (!version) return { skipped: true, reason: 'version_missing' };

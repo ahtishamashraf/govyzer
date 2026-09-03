@@ -69,7 +69,7 @@ export function verifyMagicBytes(mimeType, buffer) {
 
 /** Tenant prefixed key; buckets are private and objects are served through signed URLs. */
 export function buildStorageKey({ organizationId, entityType, entityId, fileName }) {
-  const safeName = String(fileName).replace(/[^\w.\-]/g, '_').slice(-120);
+  const safeName = String(fileName).replace(/[^\w.-]/g, '_').slice(-120);
   return `tenants/${organizationId}/${entityType}/${entityId}/${Date.now()}-${safeName}`;
 }
 

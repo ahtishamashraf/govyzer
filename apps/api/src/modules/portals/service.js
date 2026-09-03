@@ -482,7 +482,7 @@ export async function executeUnpublish({ db = getDb(), publicationId }) {
 }
 
 /** Generates the public feed a portal pulls. Authorized by the account's feed token. */
-export async function buildFeed({ providerCode, feedToken, format = 'xml' }) {
+export async function buildFeed({ providerCode, feedToken }) {
   const db = getDb();
   const account = await db('portal_accounts')
     .where({ provider_code: providerCode, feed_token: feedToken })

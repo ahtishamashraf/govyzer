@@ -67,7 +67,7 @@ export default function CommandPalette({ open, onClose, session }) {
     <div className="palette" role="dialog" aria-modal="true" aria-label="Command palette">
       <div className="palette__scrim" onClick={onClose} />
       <div className="palette__panel">
-        {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
+        {/* Focus goes to the input so a keyboard or remote can type immediately. */}
         <input
           autoFocus
           className="palette__input"

@@ -1,4 +1,3 @@
-import { getDb } from '@govyzer/database';
 import { newId } from '@govyzer/domain';
 import { registerJobHandler } from '../core/jobs.js';
 import { JOB_TYPES } from './index.js';

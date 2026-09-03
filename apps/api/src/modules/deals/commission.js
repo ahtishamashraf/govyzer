@@ -14,7 +14,7 @@ const SCOPE_SPECIFICITY = { membership: 5, team: 4, branch: 3, project: 3, sourc
  * Chooses the commission plan for a deal. Assignments are ranked by how specific their
  * scope is, then by their configured priority, then by effective date.
  */
-export async function resolveCommissionPlan({ trx, organizationId, deal, actor, explicitPlanId = null }) {
+export async function resolveCommissionPlan({ trx, organizationId, deal, explicitPlanId = null }) {
   const db = trx ?? getDb();
 
   if (explicitPlanId) {
@@ -85,7 +85,7 @@ export async function loadPlanRules({ trx, organizationId, planId }) {
 /** Calculates the split without persisting it — used by the deal preview screen. */
 export async function previewCommission({ organizationId, deal, actor, planId = null, manualOverrides = [] }) {
   const db = getDb();
-  const plan = await resolveCommissionPlan({ organizationId, deal, actor, explicitPlanId: planId });
+  const plan = await resolveCommissionPlan({ organizationId, deal, explicitPlanId: planId });
 
   const rules = plan ? await loadPlanRules({ organizationId, planId: plan.id }) : DEFAULT_COMMISSION_PLAN.rules;
   const parties = await db('deal_parties').where({ organization_id: organizationId, deal_id: deal.id });
@@ -114,7 +114,7 @@ export async function previewCommission({ organizationId, deal, actor, planId = 
  */
 export async function finalizeCommission({ trx, organizationId, actor, deal, planId = null, manualOverrides = [] }) {
   const db = trx ?? getDb();
-  const plan = await resolveCommissionPlan({ trx: db, organizationId, deal, actor, explicitPlanId: planId ?? deal.commission_plan_id });
+  const plan = await resolveCommissionPlan({ trx: db, organizationId, deal, explicitPlanId: planId ?? deal.commission_plan_id });
   const rules = plan ? await loadPlanRules({ trx: db, organizationId, planId: plan.id }) : DEFAULT_COMMISSION_PLAN.rules;
   const parties = await db('deal_parties').where({ organization_id: organizationId, deal_id: deal.id });
 

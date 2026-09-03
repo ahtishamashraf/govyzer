@@ -1,6 +1,6 @@
 'use strict';
 
-const { pk, org, timestamps, actors, money, version, orgFk, dropAll } = require('../migration-support/helpers.cjs');
+const { pk, org, timestamps, actors, money, orgFk, dropAll } = require('../migration-support/helpers.cjs');
 
 const TABLES = [
   'integration_connections',

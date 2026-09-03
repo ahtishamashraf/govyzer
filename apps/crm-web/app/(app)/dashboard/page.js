@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card, DataTable, ErrorState, PermissionDenied, ProgressBar, Skeleton, Stat, StatusBadge } from '@govyzer/ui';
 import PageHeader from '@/components/page-header';
 import { useApi, useSession } from '@/lib/api-client';
-import { formatMoney, formatNumber, titleCase } from '@/lib/format';
+import { formatMoney, formatNumber } from '@/lib/format';
 import { useI18n } from '@/lib/i18n';
 
 export default function ExecutiveDashboard() {

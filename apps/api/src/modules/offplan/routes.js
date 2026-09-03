@@ -24,7 +24,7 @@ import {
 import { validate } from '../../middleware/validate.js';
 import { authenticate, requireAuth, requireOrganization, requirePermission } from '../../middleware/auth.js';
 import { handler } from '../../core/async-handler.js';
-import { sendData, sendList, sendNoContent } from '../../core/responses.js';
+import { sendData, sendList } from '../../core/responses.js';
 import { idempotency } from '../../core/idempotency.js';
 import { nextReference } from '../../core/references.js';
 import { recordAudit, auditFromRequest } from '../../core/audit.js';

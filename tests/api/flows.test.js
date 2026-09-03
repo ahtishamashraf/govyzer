@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { getDb } from '@govyzer/database';
 import { closeDatabase, createTestOrganization, prepareDatabase, truncateAll } from '../helpers/db.js';
 import { anonymous, signIn } from '../helpers/api.js';
 

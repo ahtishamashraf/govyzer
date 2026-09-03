@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getDb } from '@govyzer/database';
 import { loadServerConfig } from '@govyzer/config';
-import { newId, UnauthorizedError } from '@govyzer/domain';
+import { UnauthorizedError } from '@govyzer/domain';
 import { handler } from '../../core/async-handler.js';
 import { sendData } from '../../core/responses.js';
 import { runJobBatch, enqueueJob } from '../../core/jobs.js';

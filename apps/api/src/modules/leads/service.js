@@ -419,7 +419,7 @@ export async function changeStage({ organizationId, actor, id, stageCode, reason
   return updated;
 }
 
-export async function acknowledgeLead({ organizationId, actor, id }) {
+export async function acknowledgeLead({ organizationId, id }) {
   const db = getDb();
   const lead = await db('leads').where({ id, organization_id: organizationId }).whereNull('deleted_at').first();
   if (!lead) throw new NotFoundError('Lead');

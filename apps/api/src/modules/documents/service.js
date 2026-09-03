@@ -1,4 +1,4 @@
-import { getDb, withTransaction } from '@govyzer/database';
+import { getDb } from '@govyzer/database';
 import { newId, NotFoundError, ValidationError } from '@govyzer/domain';
 import { nextReference } from '../../core/references.js';
 import { renderTemplate, renderPdf } from './renderer.js';
