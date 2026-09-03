@@ -3,6 +3,10 @@ import { getDb } from '@govyzer/database';
 import { loadServerConfig } from '@govyzer/config';
 import { sendData } from './core/responses.js';
 import { authRoutes } from './modules/auth/routes.js';
+import { organizationRoutes } from './modules/organizations/routes.js';
+import { userRoutes } from './modules/users/routes.js';
+import { contactRoutes } from './modules/contacts/routes.js';
+import { leadRoutes } from './modules/leads/routes.js';
 
 export function buildRouter() {
   const router = Router();
@@ -32,6 +36,10 @@ export function buildRouter() {
 
   const v1 = Router();
   v1.use('/auth', authRoutes());
+  v1.use('/organization', organizationRoutes());
+  v1.use('/users', userRoutes());
+  v1.use('/contacts', contactRoutes());
+  v1.use('/leads', leadRoutes());
   router.use('/v1', v1);
 
   return router;
