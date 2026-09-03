@@ -7,6 +7,11 @@ import { organizationRoutes } from './modules/organizations/routes.js';
 import { userRoutes } from './modules/users/routes.js';
 import { contactRoutes } from './modules/contacts/routes.js';
 import { leadRoutes } from './modules/leads/routes.js';
+import { activityRoutes } from './modules/activities/routes.js';
+import { listingRoutes } from './modules/listings/routes.js';
+import { portalRoutes } from './modules/portals/routes.js';
+import { mediaRoutes } from './modules/media/routes.js';
+import { offplanRoutes } from './modules/offplan/routes.js';
 
 export function buildRouter() {
   const router = Router();
@@ -40,6 +45,11 @@ export function buildRouter() {
   v1.use('/users', userRoutes());
   v1.use('/contacts', contactRoutes());
   v1.use('/leads', leadRoutes());
+  v1.use('/activities', activityRoutes());
+  v1.use('/listings', listingRoutes());
+  v1.use('/portals', portalRoutes());
+  v1.use('/media', mediaRoutes());
+  v1.use('/offplan', offplanRoutes());
   router.use('/v1', v1);
 
   return router;
