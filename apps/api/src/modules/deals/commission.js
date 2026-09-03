@@ -1,4 +1,4 @@
-import { getDb } from '@govyzer/database';
+import { getDb, reserializeJsonColumn } from '@govyzer/database';
 import {
   newId,
   NotFoundError,
@@ -215,7 +215,9 @@ export async function reverseCommission({ trx, organizationId, actor, dealId, re
     gross_commission: reversal.gross_commission,
     vat_amount: reversal.vat_amount,
     currency: snapshot.currency,
-    rules_snapshot: snapshot.rules_snapshot,
+    // Carried over verbatim from the snapshot being reversed, re-serialized because a
+    // JSON column read comes back parsed on some servers and as text on others.
+    rules_snapshot: reserializeJsonColumn(snapshot.rules_snapshot, []),
     inputs_snapshot: JSON.stringify({ reason, reverses: snapshot.id }),
     status: 'reversal',
     reverses_snapshot_id: snapshot.id,

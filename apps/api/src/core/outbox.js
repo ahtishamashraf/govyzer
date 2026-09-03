@@ -1,4 +1,4 @@
-import { getDb } from '@govyzer/database';
+import { getDb, reserializeJsonColumn } from '@govyzer/database';
 import { newId } from '@govyzer/domain';
 
 /** Domain events emitted by the application. Webhooks and Sales Screen both consume these. */
@@ -101,7 +101,7 @@ export async function failEvent(db, id, error, { maxAttempts = 6 } = {}) {
       origin: 'outbox',
       origin_id: id,
       job_type: row?.event_type ?? 'outbox_event',
-      payload: row?.payload ?? '{}',
+      payload: reserializeJsonColumn(row?.payload, {}) ?? '{}',
       attempts,
       last_error: String(error?.message ?? error).slice(0, 2000),
       status: 'open',

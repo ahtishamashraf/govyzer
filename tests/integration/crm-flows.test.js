@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { newId } from '@govyzer/domain';
+import { fromJsonColumn } from '@govyzer/database';
 import { closeDatabase, createTestOrganization, prepareDatabase, truncateAll } from '../helpers/db.js';
 import { createLead, claimFromPool, releaseToPool } from '../../apps/api/src/modules/leads/service.js';
 import { processSlaEvent } from '../../apps/api/src/modules/leads/sla.js';
@@ -184,7 +185,7 @@ describe('CRM flows', () => {
     await processOutboxBatch({ limit: 100 });
     const salesEvent = await db('sales_events').where({ organization_id: org.organizationId, event_type: 'deal_won' }).first();
     expect(salesEvent).toBeTruthy();
-    expect(JSON.parse(salesEvent.display_payload)).not.toHaveProperty('contact_name');
+    expect(fromJsonColumn(salesEvent.display_payload, {})).not.toHaveProperty('contact_name');
 
     const points = await db('points_ledger').where({ organization_id: org.organizationId, event_type: 'deal_won' });
     expect(points.length).toBeGreaterThan(0);
