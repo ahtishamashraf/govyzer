@@ -1,0 +1,28 @@
+# Local MySQL only. The applications run directly on your machine with npm; Docker is
+# never required to run Govyzer itself.
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: govyzer-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: govyzer_root
+      MYSQL_DATABASE: govyzer_dev
+      MYSQL_USER: govyzer
+      MYSQL_PASSWORD: govyzer_local_pw
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+00:00
+    ports:
+      - '3306:3306'
+    volumes:
+      - govyzer-mysql:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-pgovyzer_root']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  govyzer-mysql:

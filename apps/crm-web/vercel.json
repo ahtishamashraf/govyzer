@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "npm install --workspaces --include-workspace-root",
+  "buildCommand": "npm run build --workspace=@govyzer/crm-web",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "x-content-type-options", "value": "nosniff" },
+        { "key": "referrer-policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "strict-transport-security", "value": "max-age=31536000; includeSubDomains" }
+      ]
+    },
+    { "source": "/sw.js", "headers": [{ "key": "cache-control", "value": "no-cache, no-store, must-revalidate" }] }
+  ]
+}

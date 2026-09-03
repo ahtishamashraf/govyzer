@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install --workspaces --include-workspace-root",
+  "buildCommand": "echo \"No build step: the API runs as a Node Function\"",
+  "outputDirectory": ".",
+  "functions": {
+    "api/index.js": { "maxDuration": 60, "memory": 1024 }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
+  "crons": [
+    { "path": "/v1/cron/outbox", "schedule": "* * * * *" },
+    { "path": "/v1/cron/jobs", "schedule": "* * * * *" },
+    { "path": "/v1/cron/sla", "schedule": "*/5 * * * *" },
+    { "path": "/v1/cron/expiries", "schedule": "*/10 * * * *" },
+    { "path": "/v1/cron/webhooks", "schedule": "*/5 * * * *" },
+    { "path": "/v1/cron/portals", "schedule": "0 * * * *" },
+    { "path": "/v1/cron/workflows", "schedule": "*/5 * * * *" },
+    { "path": "/v1/cron/reminders", "schedule": "*/15 * * * *" },
+    { "path": "/v1/cron/reports", "schedule": "0 6 * * *" },
+    { "path": "/v1/cron/retention", "schedule": "0 3 * * *" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "x-content-type-options", "value": "nosniff" },
+        { "key": "referrer-policy", "value": "no-referrer" },
+        { "key": "strict-transport-security", "value": "max-age=31536000; includeSubDomains" }
+      ]
+    }
+  ]
+}
