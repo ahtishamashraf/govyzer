@@ -210,3 +210,50 @@ describe('API behaviour', () => {
     expect(response.body.error.message).toMatch(/approval/i);
   });
 });
+
+describe('data deletion workflow', () => {
+  let org;
+  let owner;
+
+  beforeAll(async () => {
+    await prepareDatabase();
+    await truncateAll();
+    org = await createTestOrganization({ slug: 'data-requests' });
+    owner = await signIn({ email: org.owner.email, password: org.password });
+  });
+
+  afterAll(async () => {
+    await closeDatabase();
+  });
+
+  it('records, approves and executes a contact erasure while keeping history', async () => {
+    const lead = await owner.post('/v1/leads').send({
+      module: 'ready',
+      purpose: 'buy',
+      contact: { first_name: 'Erase', last_name: 'Me', identifiers: [{ identifier_type: 'phone', value: '0505550000' }] },
+    });
+    const contactId = lead.body.data.contact.id;
+
+    const request = await owner.post('/v1/organization/data-requests').send({ entity_type: 'contact', entity_id: contactId, reason: 'Client asked to be removed' });
+    expect(request.status).toBe(201);
+    expect(request.body.data.status).toBe('pending');
+
+    const approved = await owner.post(`/v1/organization/data-requests/${request.body.data.id}/approve`).send({ decision: 'approved' });
+    expect(approved.status).toBe(200);
+    expect(approved.body.data.status).toBe('executed');
+
+    const gone = await owner.get(`/v1/contacts/${contactId}`);
+    expect(gone.status).toBe(404);
+
+    const audit = await owner.get('/v1/organization/audit-logs?action=data.deletion_executed');
+    expect(audit.body.data.length).toBe(1);
+  });
+
+  it('refuses to approve the same request twice', async () => {
+    const lead = await owner.post('/v1/leads').send({ module: 'ready', purpose: 'buy', contact: { first_name: 'Twice', identifiers: [{ identifier_type: 'phone', value: '0505551111' }] } });
+    const request = await owner.post('/v1/organization/data-requests').send({ entity_type: 'contact', entity_id: lead.body.data.contact.id });
+    await owner.post(`/v1/organization/data-requests/${request.body.data.id}/approve`).send({ decision: 'approved' });
+    const second = await owner.post(`/v1/organization/data-requests/${request.body.data.id}/approve`).send({ decision: 'approved' });
+    expect(second.status).toBe(422);
+  });
+});

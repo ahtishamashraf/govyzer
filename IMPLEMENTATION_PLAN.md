@@ -37,6 +37,7 @@ Router + Express + Knex/MySQL 8 + S3, deployable as three independent Vercel pro
 - [x] AI features via OpenAI provider interface with zod structured outputs + usage ledger
 - [x] Sales displays: pairing, scoped sessions, feed, heartbeat, events, points, targets
 - [x] Dashboards, reports, exports
+- [x] Data export and deletion requests with approval, anonymization and audit trail
 - [x] OpenAPI 3.1 document validated against the router table
 
 ### M4 — CRM web
@@ -56,6 +57,13 @@ Router + Express + Knex/MySQL 8 + S3, deployable as three independent Vercel pro
 - [x] Unit, integration (MySQL), API (supertest), security regression, E2E (Playwright)
 - [x] Docs: architecture, data model, permissions, integrations, deployment, operations, flows
 - [x] Lint + build green
+- [x] CI workflow: guards, lint, migrations, tests, OpenAPI drift check, production builds
+
+## Status
+
+All milestones are complete. `STATUS.md` carries the latest verification results, the
+known limitations (notably: TOTP MFA is not implemented) and the remaining external
+blockers, which are credentials and accounts rather than code.
 
 ## Checklist conventions
 Items are only checked when the code exists, is wired to real queries/UI, and has a test or a

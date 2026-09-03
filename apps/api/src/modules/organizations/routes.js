@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { getDb } from '@govyzer/database';
+import { getDb, withTransaction } from '@govyzer/database';
 import { newId, NotFoundError, ValidationError, DEFAULT_ROLES, PERMISSIONS } from '@govyzer/domain';
 import { validate } from '../../middleware/validate.js';
 import { authenticate, requireAuth, requireOrganization, requirePermission } from '../../middleware/auth.js';
@@ -436,6 +436,121 @@ export function organizationRoutes() {
       const [{ total }] = await query.clone().clearOrder().count({ total: 'id' });
       const rows = await query.orderBy('created_at', 'desc').limit(perPage).offset((page - 1) * perPage);
       sendList(res, rows, { page, perPage, total: Number(total) });
+    })
+  );
+
+  // ---------- Data export and deletion requests ----------
+  router.get(
+    '/data-requests',
+    requirePermission('data.delete'),
+    validate({ query: paginationSchema }),
+    handler(async (req, res) => {
+      const rows = await getDb()('data_deletion_requests')
+        .where('organization_id', req.actor.organizationId)
+        .orderBy('created_at', 'desc')
+        .limit(req.validatedQuery.per_page);
+      sendList(res, rows, { page: req.validatedQuery.page, perPage: req.validatedQuery.per_page, total: rows.length });
+    })
+  );
+
+  router.post(
+    '/data-requests',
+    requirePermission('data.delete'),
+    validate({
+      body: z.object({
+        entity_type: z.enum(['contact', 'lead']),
+        entity_id: idSchema,
+        reason: z.string().max(500).optional(),
+      }),
+    }),
+    handler(async (req, res) => {
+      const db = getDb();
+      const table = req.validatedBody.entity_type === 'contact' ? 'contacts' : 'leads';
+      const record = await db(table)
+        .where({ id: req.validatedBody.entity_id, organization_id: req.actor.organizationId })
+        .whereNull('deleted_at')
+        .first('id');
+      if (!record) throw new NotFoundError(req.validatedBody.entity_type);
+
+      const id = newId();
+      await db('data_deletion_requests').insert({
+        id,
+        organization_id: req.actor.organizationId,
+        entity_type: req.validatedBody.entity_type,
+        entity_id: req.validatedBody.entity_id,
+        reason: req.validatedBody.reason ?? null,
+        status: 'pending',
+        requested_by_membership_id: req.actor.membershipId,
+      });
+      await recordAudit({ ...auditFromRequest(req), action: 'data.deletion_requested', entityType: req.validatedBody.entity_type, entityId: req.validatedBody.entity_id, after: { request_id: id } });
+      sendData(res, await db('data_deletion_requests').where('id', id).first(), { status: 201 });
+    })
+  );
+
+  /**
+   * Executing a deletion request anonymizes the identity and soft-deletes the record.
+   * Financial, audit and commission history is deliberately preserved.
+   */
+  router.post(
+    '/data-requests/:id/approve',
+    requirePermission('data.delete'),
+    validate({ params: z.object({ id: idSchema }), body: z.object({ decision: z.enum(['approved', 'rejected']), reason: z.string().max(500).optional() }) }),
+    handler(async (req, res) => {
+      const db = getDb();
+      const request = await db('data_deletion_requests')
+        .where({ id: req.validatedParams.id, organization_id: req.actor.organizationId })
+        .first();
+      if (!request) throw new NotFoundError('Data request');
+      if (request.status !== 'pending') throw new ValidationError('This request has already been decided');
+
+      if (req.validatedBody.decision === 'rejected') {
+        await db('data_deletion_requests').where('id', request.id).update({
+          status: 'rejected',
+          approved_by_membership_id: req.actor.membershipId,
+          approved_at: db.fn.now(),
+          result: JSON.stringify({ reason: req.validatedBody.reason ?? null }),
+        });
+        return sendData(res, await db('data_deletion_requests').where('id', request.id).first());
+      }
+
+      const result = await withTransaction(db, async (trx) => {
+        if (request.entity_type === 'contact') {
+          const identifiers = await trx('contact_identifiers')
+            .where({ organization_id: req.actor.organizationId, contact_id: request.entity_id })
+            .update({ value_raw: '[erased]', value_normalized: `erased:${request.entity_id}:${newId()}`, deleted_at: trx.fn.now() });
+          await trx('contacts').where({ id: request.entity_id, organization_id: req.actor.organizationId }).update({
+            display_name: 'Erased contact',
+            first_name: null,
+            last_name: null,
+            company_name: null,
+            summary: null,
+            status: 'erased',
+            do_not_contact: true,
+            deleted_at: trx.fn.now(),
+          });
+          await trx('notes')
+            .where({ organization_id: req.actor.organizationId, entity_type: 'contact', entity_id: request.entity_id })
+            .update({ body: '[erased]', deleted_at: trx.fn.now() });
+          return { identifiers_erased: identifiers };
+        }
+
+        await trx('leads').where({ id: request.entity_id, organization_id: req.actor.organizationId }).update({
+          notes: null,
+          provider_payload: null,
+          deleted_at: trx.fn.now(),
+        });
+        return { lead_erased: true };
+      });
+
+      await db('data_deletion_requests').where('id', request.id).update({
+        status: 'executed',
+        approved_by_membership_id: req.actor.membershipId,
+        approved_at: db.fn.now(),
+        executed_at: db.fn.now(),
+        result: JSON.stringify(result),
+      });
+      await recordAudit({ ...auditFromRequest(req), action: 'data.deletion_executed', entityType: request.entity_type, entityId: request.entity_id, after: result });
+      sendData(res, await db('data_deletion_requests').where('id', request.id).first());
     })
   );
 

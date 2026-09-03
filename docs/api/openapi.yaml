@@ -24382,6 +24382,451 @@ paths:
       security:
         - bearerAuth: []
         - cookieAuth: []
+  /v1/organization/data-requests:
+    get:
+      summary: GET /v1/organization/data-requests
+      tags:
+        - organization
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  request_id:
+                    type: string
+                    nullable: true
+                required:
+                  - data
+        "401":
+          description: Authentication is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "403":
+          description: The actor lacks the permission or module entitlement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "404":
+          description: Not found within this organization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+    post:
+      summary: POST /v1/organization/data-requests
+      tags:
+        - organization
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  request_id:
+                    type: string
+                    nullable: true
+                required:
+                  - data
+        "401":
+          description: Authentication is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "403":
+          description: The actor lacks the permission or module entitlement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "404":
+          description: Not found within this organization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+  /v1/organization/data-requests/{id}/approve:
+    post:
+      summary: POST /v1/organization/data-requests/:id/approve
+      tags:
+        - organization
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  request_id:
+                    type: string
+                    nullable: true
+                required:
+                  - data
+        "401":
+          description: Authentication is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "403":
+          description: The actor lacks the permission or module entitlement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "404":
+          description: Not found within this organization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                    required:
+                      - code
+                      - message
+                  request_id:
+                    type: string
+                    nullable: true
+      parameters:
+        - *a1
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
   /v1/organization/default-roles:
     get:
       summary: GET /v1/organization/default-roles
