@@ -1,0 +1,31 @@
+{
+  "name": "@govyzer/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/app.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "openapi": "node scripts/generate-openapi.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.717.0",
+    "@aws-sdk/s3-request-presigner": "3.717.0",
+    "@govyzer/config": "0.1.0",
+    "@govyzer/database": "0.1.0",
+    "@govyzer/domain": "0.1.0",
+    "@govyzer/integrations": "0.1.0",
+    "@govyzer/validation": "0.1.0",
+    "bcryptjs": "2.4.3",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "express": "4.21.2",
+    "helmet": "8.0.0",
+    "jsonwebtoken": "9.0.2",
+    "openai": "4.77.0",
+    "yaml": "2.7.0",
+    "zod": "3.24.1"
+  }
+}
