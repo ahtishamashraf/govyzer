@@ -79,11 +79,36 @@ export function validateCommissionRules(rules) {
     return issues;
   }
 
-  const grossPercentage = rules
-    .filter((rule) => rule.calculation_type === 'percentage' && (rule.applies_to ?? 'gross') === 'gross')
+  const grossRules = rules.filter(
+    (rule) => rule.calculation_type === 'percentage' && (rule.applies_to ?? 'gross') === 'gross'
+  );
+  const tieredRules = grossRules.filter((rule) => Array.isArray(rule.tiers) && rule.tiers.length > 0);
+  const grossPercentage = grossRules
+    .filter((rule) => !tieredRules.includes(rule))
     .reduce((total, rule) => total + Number(rule.percentage ?? 0), 0);
   const hasFixed = rules.some((rule) => rule.calculation_type === 'fixed');
   const hasRemaining = rules.some((rule) => (rule.applies_to ?? 'gross') === 'remaining');
+
+  // Tiered plans are validated per band: at every threshold the applicable splits must
+  // still add up to 100%.
+  if (tieredRules.length > 0) {
+    const boundaries = [...new Set(tieredRules.flatMap((rule) => rule.tiers.map((tier) => Number(tier.from ?? 0))))].sort((a, b) => a - b);
+    for (const boundary of boundaries) {
+      const total = grossRules.reduce((sum, rule) => {
+        if (!Array.isArray(rule.tiers) || rule.tiers.length === 0) return sum + Number(rule.percentage ?? 0);
+        const tier = rule.tiers
+          .filter((entry) => boundary >= Number(entry.from ?? 0) && (entry.to == null || boundary <= Number(entry.to)))
+          .sort((a, b) => Number(b.from ?? 0) - Number(a.from ?? 0))[0];
+        return sum + Number(tier?.percentage ?? 0);
+      }, 0);
+      if (!hasFixed && !hasRemaining && Math.abs(total - 100) > 0.0001) {
+        issues.push({
+          path: 'rules.tiers',
+          message: `Tier band starting at ${boundary} totals ${total}% instead of 100%`,
+        });
+      }
+    }
+  }
 
   for (const rule of rules) {
     if (rule.calculation_type === 'percentage' && rule.percentage == null && !rule.tiers) {
@@ -97,13 +122,13 @@ export function validateCommissionRules(rules) {
     }
   }
 
-  if (!hasFixed && !hasRemaining && Math.abs(grossPercentage - 100) > 0.0001) {
+  if (!hasFixed && !hasRemaining && tieredRules.length === 0 && Math.abs(grossPercentage - 100) > 0.0001) {
     issues.push({
       path: 'rules',
       message: `Percentage splits must total 100% (currently ${grossPercentage}%)`,
     });
   }
-  if (grossPercentage > 100.0001) {
+  if (tieredRules.length === 0 && grossPercentage > 100.0001) {
     issues.push({ path: 'rules', message: `Percentage splits exceed 100% (${grossPercentage}%)` });
   }
   return issues;
