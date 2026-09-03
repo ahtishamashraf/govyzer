@@ -77,6 +77,33 @@ jobs:
         run: npm run db:migrate
       - name: Seed reference data
         run: npm run db:seed
+      - name: Create the test database
+        # tests/helpers/setup.js pins every run to its own disposable database so a
+        # test can never truncate development data. Create it and grant the app user.
+        env:
+          MYSQL_ROOT_PASSWORD: ci_root_pw
+        run: |
+          cat > ci-create-test-db.cjs <<'JS'
+          const mysql = require('mysql2/promise');
+          const name = process.env.TEST_DATABASE_NAME || 'govyzer_test';
+          (async () => {
+            const c = await mysql.createConnection({
+              host: process.env.DATABASE_HOST,
+              port: Number(process.env.DATABASE_PORT),
+              user: 'root',
+              password: process.env.MYSQL_ROOT_PASSWORD,
+            });
+            await c.query(`CREATE DATABASE IF NOT EXISTS \`${name}\``);
+            await c.query(`GRANT ALL PRIVILEGES ON \`${name}\`.* TO ?@?`, [process.env.DATABASE_USER, '%']);
+            await c.query('FLUSH PRIVILEGES');
+            await c.end();
+          })().catch((error) => {
+            console.error(error.message);
+            process.exit(1);
+          });
+          JS
+          node ./ci-create-test-db.cjs
+          rm -f ci-create-test-db.cjs
       - run: npx vitest run
       - name: Verify OpenAPI matches the live routes
         run: |
