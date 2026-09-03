@@ -1,0 +1,12 @@
+{
+  "name": "@govyzer/integrations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": { ".": "./src/index.js" },
+  "dependencies": {
+    "@govyzer/domain": "0.1.0",
+    "zod": "3.24.1"
+  }
+}
