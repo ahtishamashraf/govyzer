@@ -32,7 +32,8 @@
     "format": "prettier --write .",
     "check:no-typescript": "node scripts/check-no-typescript.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
-    "verify": "npm run check:no-typescript && npm run lint && npm run test && npm run build"
+    "verify": "npm run check:no-typescript && npm run lint && npm run test && npm run build",
+    "db:seed:demo": "npm run seed:demo --workspace=@govyzer/api"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",
