@@ -230,7 +230,7 @@ export const integrationConnectionSchema = z.object({
   category: z.enum(['portal', 'messaging', 'email', 'calendar', 'telephony', 'automation', 'signature', 'ai']).default('portal'),
   name: z.string().min(1).max(160),
   settings: z.record(z.string(), z.unknown()).default({}),
-  credentials: z.record(z.string(), z.string().max(4000)).default({}),
+  credentials: z.record(z.string(), z.union([z.string().max(4000), z.number(), z.boolean()])).default({}),
   is_enabled: z.boolean().default(true),
 });
 
@@ -238,7 +238,7 @@ export const portalAccountSchema = z.object({
   provider_code: z.string().min(1).max(40),
   name: z.string().min(1).max(160),
   external_account_id: z.string().max(190).optional(),
-  credentials: z.record(z.string(), z.string().max(4000)).default({}),
+  credentials: z.record(z.string(), z.union([z.string().max(4000), z.number(), z.boolean()])).default({}),
   settings: z.record(z.string(), z.unknown()).default({}),
   auto_publish: z.boolean().default(false),
   listing_quota: z.coerce.number().int().min(0).optional(),

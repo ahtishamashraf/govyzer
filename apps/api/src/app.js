@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 import { logger } from './core/logger.js';
 import { buildRouter } from './routes.js';
 import './jobs/index.js';
+import './jobs/handlers.js';
 
 export function createApp({ extraCorsOrigins = [] } = {}) {
   const config = loadServerConfig();

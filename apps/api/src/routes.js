@@ -12,6 +12,17 @@ import { listingRoutes } from './modules/listings/routes.js';
 import { portalRoutes } from './modules/portals/routes.js';
 import { mediaRoutes } from './modules/media/routes.js';
 import { offplanRoutes } from './modules/offplan/routes.js';
+import { dealRoutes } from './modules/deals/routes.js';
+import { documentRoutes } from './modules/documents/routes.js';
+import { financeRoutes } from './modules/finance/routes.js';
+import { workflowRoutes } from './modules/workflows/routes.js';
+import { integrationRoutes } from './modules/integrations/routes.js';
+import { aiRoutes } from './modules/ai/routes.js';
+import { reportRoutes } from './modules/reports/routes.js';
+import { salesScreenRoutes, displayRoutes } from './modules/sales-screen/routes.js';
+import { webhookRoutes } from './modules/webhooks/routes.js';
+import { publicRoutes } from './modules/public/routes.js';
+import { cronRoutes } from './modules/cron/routes.js';
 
 export function buildRouter() {
   const router = Router();
@@ -50,6 +61,18 @@ export function buildRouter() {
   v1.use('/portals', portalRoutes());
   v1.use('/media', mediaRoutes());
   v1.use('/offplan', offplanRoutes());
+  v1.use('/deals', dealRoutes());
+  v1.use('/documents', documentRoutes());
+  v1.use('/finance', financeRoutes());
+  v1.use('/workflows', workflowRoutes());
+  v1.use('/integrations', integrationRoutes());
+  v1.use('/ai', aiRoutes());
+  v1.use('/reports', reportRoutes());
+  v1.use('/sales-screen', salesScreenRoutes());
+  v1.use('/display', displayRoutes());
+  v1.use('/webhooks', webhookRoutes());
+  v1.use('/public', publicRoutes());
+  v1.use('/cron', cronRoutes());
   router.use('/v1', v1);
 
   return router;

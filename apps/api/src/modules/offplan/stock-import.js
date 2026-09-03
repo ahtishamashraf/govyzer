@@ -1,5 +1,5 @@
 import { getDb, withTransaction } from '@govyzer/database';
-import { newId, NotFoundError, ValidationError } from '@govyzer/domain';
+import { newId, NotFoundError, ValidationError, UNIT_STOCK_STATUSES } from '@govyzer/domain';
 import { sha256 } from '../../core/crypto.js';
 import { nextReference } from '../../core/references.js';
 import { recordAudit } from '../../core/audit.js';
@@ -111,6 +111,10 @@ export async function importStock({ organizationId, actor, payload }) {
     if (row.payment_plan_code && !plan) errors.push({ field: 'payment_plan_code', message: `Unknown payment plan ${row.payment_plan_code}` });
 
     if (row.current_price != null && Number(row.current_price) < 0) errors.push({ field: 'current_price', message: 'Price cannot be negative' });
+    if (row.base_price != null && Number(row.base_price) < 0) errors.push({ field: 'base_price', message: 'Price cannot be negative' });
+    if (row.bedrooms != null && (Number(row.bedrooms) < 0 || Number(row.bedrooms) > 20)) errors.push({ field: 'bedrooms', message: 'Bedrooms must be between 0 and 20' });
+    if (row.built_up_area != null && Number(row.built_up_area) < 0) errors.push({ field: 'built_up_area', message: 'Area cannot be negative' });
+    if (row.stock_status && !UNIT_STOCK_STATUSES.includes(row.stock_status)) errors.push({ field: 'stock_status', message: `Unknown stock status ${row.stock_status}` });
 
     const existing = existingMap.get(key) ?? null;
     if (existing && ['reserved', 'booked', 'sold'].includes(existing.stock_status) && row.stock_status && row.stock_status !== existing.stock_status) {
