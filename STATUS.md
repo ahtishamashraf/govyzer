@@ -37,8 +37,29 @@ npm --workspace @govyzer/sales-screen run build                # passed
 npx playwright test                                            # 2 passed
 ```
 
-Test breakdown: 31 unit (domain), 16 integration (tenant isolation and CRM flows),
-50 API (auth, security regression, business flows, OpenAPI conformance), 2 end-to-end.
+The same sweep runs in CI against MySQL 8.4 on every push
+(`.github/workflows/ci.yml`), and is green.
+
+Test breakdown: 35 unit (domain and JSON column helpers), 16 integration (tenant
+isolation and CRM flows), 50 API (auth, security regression, business flows, OpenAPI
+conformance), 2 end-to-end.
+
+CI additionally runs the whole suite against **MySQL 8.4**, which is what matters: the
+local development database is MariaDB 10.11 and the two differ in ways that hide real
+defects (see below). Treat a green local run as necessary but not sufficient.
+
+## Developing on MariaDB, deploying on MySQL
+
+MariaDB's JSON type is an alias for LONGTEXT, so it returns JSON columns as text, while
+MySQL 8 returns them already parsed. Code that reads a JSON column and writes the value
+back therefore behaves differently per server, and an array handed to the driver unparsed
+is expanded into one binding per element and fails the insert outright. This shipped two
+real defects that only CI caught (commission reversal on a cancelled deal, and the outbox
+dead letter path).
+
+Always read and write JSON columns through `fromJsonColumn` / `toJsonColumn` /
+`reserializeJsonColumn` in `@govyzer/database`. `tests/unit/json-columns.test.js` covers
+both server shapes so the difference is caught without a MySQL server present.
 
 ## Known limitations
 
